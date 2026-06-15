@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>U:story[ユーストーリー]｜高校生のための求人サイト</title>
+<meta name="description" content="北海道の高校生のための求人サイト。仕事をストーリーから知る、自分らしい進路を見つける、新しい就職活動のかたち。" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=M+PLUS+Rounded+1c:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">U</span>
+      <span>U:story</span>
+      <span class="brand-tagline">ユーストーリー</span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="#shortcuts">業種で探す</a>
+      <a href="#features">こだわり条件</a>
+      <a href="#stories">ストーリー記事</a>
+      <span class="area-select">📍 北海道 ▾</span>
+      <a href="login.html" class="nav-cta">学校ログイン</a>
+    </nav>
+    <button class="hamburger" aria-label="メニュー" onclick="document.getElementById('nav').classList.toggle('is-open')">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container hero-inner">
+    <span class="hero-eyebrow">E N J O Y　J O B　H U N T I N G</span>
+    <h1 class="hero-title">仕事は、<span class="yellow">物語</span>で<br>知ろう。</h1>
+    <p class="hero-lead">
+      条件や数字だけでは見えてこない、その仕事の温度。<br>
+      北海道で働く先輩のリアルなストーリーから、自分らしい進路を見つけよう。
+    </p>
+    <div class="hero-search">
+      <input type="text" placeholder="🔍 キーワード・市町村・業種で探す" />
+      <button type="button">検索</button>
+    </div>
+  </div>
+</section>
+
+<section id="shortcuts">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title">業種から<span class="pink">探す</span></h2>
+      <p class="section-lead">気になる仕事のジャンルから、求人を見てみよう。</p>
+    </div>
+    <div class="shortcut-grid">
+      <div class="shortcut">
+        <div class="icon">🏭</div>
+        <div class="shortcut-name">製造</div>
+        <div class="shortcut-count">218件</div>
+      </div>
+      <div class="shortcut">
+        <div class="icon">🏗</div>
+        <div class="shortcut-name">建設</div>
+        <div class="shortcut-count">142件</div>
+      </div>
+      <div class="shortcut">
+        <div class="icon">🤝</div>
+        <div class="shortcut-name">福祉・介護</div>
+        <div class="shortcut-count">96件</div>
+      </div>
+      <div class="shortcut">
+        <div class="icon">🍳</div>
+        <div class="shortcut-name">飲食・食品</div>
+        <div class="shortcut-count">88件</div>
+      </div>
+      <div class="shortcut">
+        <div class="icon">🛒</div>
+        <div class="shortcut-name">販売・小売</div>
+        <div class="shortcut-count">132件</div>
+      </div>
+      <div class="shortcut">
+        <div class="icon">🚚</div>
+        <div class="shortcut-name">運輸・物流</div>
+        <div class="shortcut-count">74件</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" style="background: var(--bg-soft);">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title">こだわり条件から<span class="pink">探す</span></h2>
+      <p class="section-lead">「ここは譲れない」を選んで、自分に合う求人を絞り込もう。</p>
+    </div>
+    <div class="shortcut-grid">
+      <div class="shortcut">
+        <div class="icon">🏠</div>
+        <div class="shortcut-name">寮あり</div>
+        <div class="shortcut-count">186件</div>
+      </div>
+      <div class="shortcut">
+        <div class="icon">📅</div>
+        <div class="shortcut-name">年休120日以上</div>
+        <div class="shortcut-count">312件</div>
+      </div>
+      <div class="shortcut">
+        <div class="icon">💰</div>
+        <div class="shortcut-name">初任給18万以上</div>
+        <div class="shortcut-count">425件</div>
+      </div>
+      <div class="shortcut">
+        <div class="icon">🚌</div>
+        <div class="shortcut-name">通勤手当あり</div>
+        <div class="shortcut-count">782件</div>
+      </div>
+      <div class="shortcut">
+        <div class="icon">✈️</div>
+        <div class="shortcut-name">転勤なし</div>
+        <div class="shortcut-count">540件</div>
+      </div>
+      <div class="shortcut">
+        <div class="icon">🎓</div>
+        <div class="shortcut-name">資格取得支援</div>
+        <div class="shortcut-count">196件</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title">PICK UP <span class="pink">求人</span></h2>
+      <p class="section-lead">今おすすめしたい、注目の求人をピックアップ。</p>
+    </div>
+    <div class="jobs-grid">
+
+      <a href="login.html" class="job-card">
+        <div class="job-thumb">
+          <img src="images/job-mfg.jpg" alt="" />
+          <div class="job-badges">
+            <span class="badge feature">寮あり</span>
+            <span class="badge feature-yellow">年休120日</span>
+          </div>
+        </div>
+        <div class="job-body">
+          <div class="job-company">株式会社カタムラ製作所</div>
+          <h3 class="job-title">機械オペレーター／滝川工場</h3>
+          <div class="job-meta">
+            <span class="meta-pill">製造</span>
+            <span class="meta-pill">滝川市</span>
+            <span class="meta-pill">未経験OK</span>
+          </div>
+          <div class="job-stats">
+            <div class="stat"><span class="stat-label">月給</span><span class="stat-value"><span class="accent">19.5</span>万</span></div>
+            <div class="stat"><span class="stat-label">年休</span><span class="stat-value">120日</span></div>
+            <div class="stat"><span class="stat-label">通勤</span><span class="stat-value">あり</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a href="login.html" class="job-card">
+        <div class="job-thumb">
+          <img src="images/job-construction.jpg" alt="" />
+          <div class="job-badges">
+            <span class="badge feature">資格取得支援</span>
+          </div>
+        </div>
+        <div class="job-body">
+          <div class="job-company">北海建設工業株式会社</div>
+          <h3 class="job-title">建設現場スタッフ／道央エリア</h3>
+          <div class="job-meta">
+            <span class="meta-pill">建設</span>
+            <span class="meta-pill">砂川市</span>
+            <span class="meta-pill">資格手当</span>
+          </div>
+          <div class="job-stats">
+            <div class="stat"><span class="stat-label">月給</span><span class="stat-value"><span class="accent">20.8</span>万</span></div>
+            <div class="stat"><span class="stat-label">年休</span><span class="stat-value">112日</span></div>
+            <div class="stat"><span class="stat-label">転勤</span><span class="stat-value">なし</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a href="login.html" class="job-card">
+        <div class="job-thumb">
+          <img src="images/job-care.jpg" alt="" />
+          <div class="job-badges">
+            <span class="badge feature-yellow">未経験OK</span>
+          </div>
+        </div>
+        <div class="job-body">
+          <div class="job-company">社会福祉法人ひだまりの郷</div>
+          <h3 class="job-title">介護スタッフ／苫小牧の特養</h3>
+          <div class="job-meta">
+            <span class="meta-pill">福祉</span>
+            <span class="meta-pill">苫小牧市</span>
+            <span class="meta-pill">資格取得支援</span>
+          </div>
+          <div class="job-stats">
+            <div class="stat"><span class="stat-label">月給</span><span class="stat-value"><span class="accent">18.2</span>万</span></div>
+            <div class="stat"><span class="stat-label">年休</span><span class="stat-value">115日</span></div>
+            <div class="stat"><span class="stat-label">寮</span><span class="stat-value">あり</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a href="login.html" class="job-card">
+        <div class="job-thumb">
+          <img src="images/job-food.jpg" alt="" />
+          <div class="job-badges">
+            <span class="badge feature">転勤なし</span>
+          </div>
+        </div>
+        <div class="job-body">
+          <div class="job-company">株式会社きたの食品</div>
+          <h3 class="job-title">食品工場での製造／旭川</h3>
+          <div class="job-meta">
+            <span class="meta-pill">食品</span>
+            <span class="meta-pill">旭川市</span>
+            <span class="meta-pill">日勤のみ</span>
+          </div>
+          <div class="job-stats">
+            <div class="stat"><span class="stat-label">月給</span><span class="stat-value"><span class="accent">17.5</span>万</span></div>
+            <div class="stat"><span class="stat-label">年休</span><span class="stat-value">108日</span></div>
+            <div class="stat"><span class="stat-label">通勤</span><span class="stat-value">あり</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a href="login.html" class="job-card">
+        <div class="job-thumb">
+          <img src="images/job-retail.jpg" alt="" />
+          <div class="job-badges">
+            <span class="badge feature-yellow">土日休み</span>
+          </div>
+        </div>
+        <div class="job-body">
+          <div class="job-company">マルマツ商事株式会社</div>
+          <h3 class="job-title">販売スタッフ／札幌エリア複数店舗</h3>
+          <div class="job-meta">
+            <span class="meta-pill">小売</span>
+            <span class="meta-pill">札幌市</span>
+            <span class="meta-pill">研修充実</span>
+          </div>
+          <div class="job-stats">
+            <div class="stat"><span class="stat-label">月給</span><span class="stat-value"><span class="accent">18.8</span>万</span></div>
+            <div class="stat"><span class="stat-label">年休</span><span class="stat-value">125日</span></div>
+            <div class="stat"><span class="stat-label">転勤</span><span class="stat-value">なし</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a href="login.html" class="job-card">
+        <div class="job-thumb">
+          <img src="images/job-transport.jpg" alt="" />
+          <div class="job-badges">
+            <span class="badge feature">資格取得支援</span>
+          </div>
+        </div>
+        <div class="job-body">
+          <div class="job-company">道北運輸株式会社</div>
+          <h3 class="job-title">運行スタッフ／旭川営業所</h3>
+          <div class="job-meta">
+            <span class="meta-pill">運輸</span>
+            <span class="meta-pill">旭川市</span>
+            <span class="meta-pill">免許支援</span>
+          </div>
+          <div class="job-stats">
+            <div class="stat"><span class="stat-label">月給</span><span class="stat-value"><span class="accent">19.0</span>万</span></div>
+            <div class="stat"><span class="stat-label">年休</span><span class="stat-value">110日</span></div>
+            <div class="stat"><span class="stat-label">寮</span><span class="stat-value">あり</span></div>
+          </div>
+        </div>
+      </a>
+
+    </div>
+    <div class="section-foot">
+      <a href="login.html" class="button button-outline">学校アカウントでもっと見る →</a>
+    </div>
+  </div>
+</section>
+
+<section id="stories" style="background: var(--bg-soft);">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title">PICK UP <span class="pink">ストーリー記事</span></h2>
+      <p class="section-lead">高卒で就職した先輩たちの、リアルな仕事と日常。</p>
+    </div>
+    <div class="stories-grid">
+
+      <a href="#" class="story-card">
+        <div class="story-thumb"><img src="images/story1.jpg" alt="" /></div>
+        <span class="story-tag">先輩インタビュー</span>
+        <h3 class="story-title">「いきなり社員旅行で沖縄」　高卒1年目、製造の現場で見たもの。</h3>
+        <div class="story-meta">滝川市・製造業 / 2026.05.10</div>
+      </a>
+
+      <a href="#" class="story-card">
+        <div class="story-thumb"><img src="images/story2.jpg" alt="" /></div>
+        <span class="story-tag">職場レポート</span>
+        <h3 class="story-title">福祉の現場って、想像と違った。介護スタッフ2年目の毎日。</h3>
+        <div class="story-meta">苫小牧市・福祉業 / 2026.04.28</div>
+      </a>
+
+      <a href="#" class="story-card">
+        <div class="story-thumb"><img src="images/story3.jpg" alt="" /></div>
+        <span class="story-tag">先輩インタビュー</span>
+        <h3 class="story-title">「進路相談で初めて出会った会社」高卒で建設会社に入った理由。</h3>
+        <div class="story-meta">砂川市・建設業 / 2026.04.15</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title">動画で<span class="pink">みる</span></h2>
+      <p class="section-lead">先輩の働く一日に、密着取材。</p>
+    </div>
+    <div class="banner">
+      <img src="images/video1.jpg" alt="動画特集" />
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <h2>先生方へ：貴校に届く求人票を、ひとつの画面で。</h2>
+  <p>各校に届く独自求人と高校生就職Webの求人をまとめて管理。学校アカウントでログインしてください。</p>
+  <a href="login.html" class="button">学校ログイン</a>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand">
+          <span class="brand-mark">U</span>
+          <span>U:story</span>
+        </div>
+        <p>北海道の高校生のための求人サイト。<br>運営：株式会社USTORY</p>
+        <div class="footer-sns">
+          <a href="#" aria-label="X (Twitter)">𝕏</a>
+          <a href="#" aria-label="Instagram">📷</a>
+          <a href="#" aria-label="YouTube">▶</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>EXPLORE</h4>
+        <ul>
+          <li><a href="#shortcuts">業種で探す</a></li>
+          <li><a href="#features">こだわり条件</a></li>
+          <li><a href="#stories">ストーリー記事</a></li>
+          <li><a href="#">動画でみる</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>FOR SCHOOLS</h4>
+        <ul>
+          <li><a href="login.html">学校ログイン（綴）</a></li>
+          <li><a href="#">ログインヘルプ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>ABOUT</h4>
+        <ul>
+          <li><a href="#">U:storyとは</a></li>
+          <li><a href="https://ustory.co.jp/" target="_blank" rel="noopener">運営会社</a></li>
+          <li><a href="#">プライバシーポリシー</a></li>
+          <li><a href="#">利用規約</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 USTORY Inc. All rights reserved.</span>
+      <span>北海道札幌市</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
