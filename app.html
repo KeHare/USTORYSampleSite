@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>求人一覧｜U:story 綴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=M+PLUS+Rounded+1c:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">U</span>
+      <span>U:story</span>
+      <span class="brand-tagline">綴｜学校アカウント</span>
+    </a>
+    <nav class="nav">
+      <span id="school-label" class="area-select"></span>
+      <a href="#" id="logout" class="logout">ログアウト</a>
+    </nav>
+  </div>
+</header>
+
+<div class="dash-tabs">
+  <div class="container">
+    <div class="dash-tabs-inner" id="tabs">
+      <button class="dash-tab is-active" data-source="all">すべて <span class="count" id="cnt-all">0</span></button>
+      <button class="dash-tab" data-source="school">自校に届いた求人 <span class="count" id="cnt-school">0</span></button>
+      <button class="dash-tab" data-source="web">高校生就職Web経由 <span class="count" id="cnt-web">0</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <div class="container">
+    <select id="f-industry">
+      <option value="">業種：すべて</option>
+    </select>
+    <select id="f-city">
+      <option value="">勤務地：すべて</option>
+    </select>
+    <select id="f-pay">
+      <option value="">初任給：すべて</option>
+      <option value="170">17万以上</option>
+      <option value="180">18万以上</option>
+      <option value="190">19万以上</option>
+      <option value="200">20万以上</option>
+    </select>
+    <select id="f-feature">
+      <option value="">こだわり：すべて</option>
+      <option value="dorm">寮あり</option>
+      <option value="holiday120">年休120日以上</option>
+      <option value="noTenkin">転勤なし</option>
+      <option value="certSupport">資格取得支援</option>
+      <option value="rookie">未経験OK</option>
+    </select>
+    <input id="f-q" type="text" placeholder="🔍 企業名・職種・キーワード" />
+    <button class="reset" id="reset">条件をクリア</button>
+  </div>
+</div>
+
+<section style="padding: 24px 0 64px;">
+  <div class="container">
+    <div class="results-count" id="meta"></div>
+    <div class="jobs-grid" id="list"></div>
+    <div class="pagination" id="pager"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2026 USTORY Inc.</span>
+      <span>綴 by U:story</span>
+    </div>
+  </div>
+</footer>
+
+<script src="data/schools.js"></script>
+<script src="data/jobs.js"></script>
+<script>
+(function () {
+  // ---- 認証チェック ----
+  const sess = JSON.parse(sessionStorage.getItem("tsuduri.session") || "null");
+  if (!sess) { window.location.replace("login.html"); return; }
+  document.getElementById("school-label").textContent = "📍 " + sess.shortName;
+  document.getElementById("logout").addEventListener("click", function (e) {
+    e.preventDefault();
+    sessionStorage.removeItem("tsuduri.session");
+    window.location.replace("login.html");
+  });
+
+  // ---- データ準備 ----
+  const ALL_JOBS = window.JOBS || [];
+  // 自校以外の「他校宛」を除外。web は全員に見える。
+  const visible = ALL_JOBS.filter(j => j.source === "web" || j.sourceSchoolId === sess.schoolId);
+
+  // 業種・市町村セレクトを動的生成
+  const indSet = new Map();
+  const citySet = new Set();
+  visible.forEach(j => {
+    indSet.set(j.industryKey, j.industryLabel);
+    citySet.add(j.city);
+  });
+  const indSel = document.getElementById("f-industry");
+  Array.from(indSet.entries()).forEach(([k,v]) => {
+    const o = document.createElement("option");
+    o.value = k; o.textContent = "業種：" + v; indSel.appendChild(o);
+  });
+  const citySel = document.getElementById("f-city");
+  Array.from(citySet).sort().forEach(c => {
+    const o = document.createElement("option");
+    o.value = c; o.textContent = "勤務地：" + c; citySel.appendChild(o);
+  });
+
+  // 件数
+  const cntAll = visible.length;
+  const cntSchool = visible.filter(j => j.source === "school").length;
+  const cntWeb = visible.filter(j => j.source === "web").length;
+  document.getElementById("cnt-all").textContent = cntAll.toLocaleString();
+  document.getElementById("cnt-school").textContent = cntSchool.toLocaleString();
+  document.getElementById("cnt-web").textContent = cntWeb.toLocaleString();
+
+  // ---- 状態 ----
+  const PAGE_SIZE = 24;
+  const state = {
+    source: "all",
+    industry: "",
+    city: "",
+    pay: "",
+    feature: "",
+    q: "",
+    page: 1
+  };
+
+  function applyFilters() {
+    let arr = visible.slice();
+    if (state.source !== "all") arr = arr.filter(j => j.source === state.source);
+    if (state.industry) arr = arr.filter(j => j.industryKey === state.industry);
+    if (state.city) arr = arr.filter(j => j.city === state.city);
+    if (state.pay) arr = arr.filter(j => j.monthlyPay >= Number(state.pay) * 1000);
+    if (state.feature) arr = arr.filter(j => (j.features || []).indexOf(state.feature) !== -1);
+    if (state.q) {
+      const q = state.q.toLowerCase();
+      arr = arr.filter(j =>
+        j.company.toLowerCase().includes(q) ||
+        j.title.toLowerCase().includes(q) ||
+        j.jobType.toLowerCase().includes(q) ||
+        j.city.includes(state.q)
+      );
+    }
+    return arr;
+  }
+
+  function renderCard(j) {
+    const sourceBadge = j.source === "school"
+      ? `<span class="badge source-school">自校に届いた求人</span>`
+      : `<span class="badge source-web">高校生就職Web</span>`;
+    const featureBadges = (j.features || []).slice(0, 1).map(f => {
+      const label = ({
+        dorm:"寮あり", holiday120:"年休120日", noTenkin:"転勤なし",
+        certSupport:"資格取得支援", rookie:"未経験OK", weekend:"土日休み", transport:"通勤手当"
+      })[f] || f;
+      return `<span class="badge feature-yellow">${label}</span>`;
+    }).join("");
+    const dorm = (j.features || []).indexOf("dorm") !== -1 ? "あり" : "—";
+    return `
+      <a class="job-card" href="job.html?id=${j.id}">
+        <div class="job-thumb">
+          <img src="${j.thumb}" alt="" loading="lazy" />
+          <div class="job-badges">${sourceBadge}${featureBadges}</div>
+        </div>
+        <div class="job-body">
+          <div class="job-company">${j.company}</div>
+          <h3 class="job-title">${j.title}</h3>
+          <div class="job-meta">
+            <span class="meta-pill">${j.industryLabel}</span>
+            <span class="meta-pill">${j.city}</span>
+            <span class="meta-pill">${j.jobType}</span>
+          </div>
+          <div class="job-stats">
+            <div class="stat"><span class="stat-label">月給</span><span class="stat-value"><span class="accent">${(j.monthlyPay/10000).toFixed(1)}</span>万</span></div>
+            <div class="stat"><span class="stat-label">年休</span><span class="stat-value">${j.annualHolidays}日</span></div>
+            <div class="stat"><span class="stat-label">寮</span><span class="stat-value">${dorm}</span></div>
+          </div>
+        </div>
+      </a>`;
+  }
+
+  function render() {
+    const arr = applyFilters();
+    const total = arr.length;
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    if (state.page > totalPages) state.page = totalPages;
+    const start = (state.page - 1) * PAGE_SIZE;
+    const page = arr.slice(start, start + PAGE_SIZE);
+
+    const sourceLabel = ({all:"すべて", school:"自校に届いた求人", web:"高校生就職Web経由"})[state.source];
+    document.getElementById("meta").innerHTML =
+      `<strong>${total.toLocaleString()}</strong>件　／ ${sourceLabel}　${state.page}/${totalPages}ページ`;
+
+    document.getElementById("list").innerHTML = page.length
+      ? page.map(renderCard).join("")
+      : `<div style="grid-column:1/-1; text-align:center; padding:60px; color:#666;">条件に合う求人が見つかりませんでした。条件を緩めてみてください。</div>`;
+
+    // ページャ
+    const pager = document.getElementById("pager");
+    if (totalPages <= 1) { pager.innerHTML = ""; }
+    else {
+      const btn = (label, page, active, disabled) =>
+        `<button data-page="${page}" ${active?'class="is-active"':''} ${disabled?'disabled':''}>${label}</button>`;
+      const items = [];
+      items.push(btn("«", state.page - 1, false, state.page === 1));
+      const w = 2;
+      const from = Math.max(1, state.page - w);
+      const to = Math.min(totalPages, state.page + w);
+      if (from > 1) { items.push(btn(1, 1, state.page===1, false)); if (from > 2) items.push(`<span style="padding:8px;">…</span>`); }
+      for (let p = from; p <= to; p++) items.push(btn(p, p, state.page === p, false));
+      if (to < totalPages) { if (to < totalPages-1) items.push(`<span style="padding:8px;">…</span>`); items.push(btn(totalPages, totalPages, false, false)); }
+      items.push(btn("»", state.page + 1, false, state.page === totalPages));
+      pager.innerHTML = items.join("");
+      pager.querySelectorAll("button[data-page]").forEach(b => {
+        b.addEventListener("click", () => { state.page = Number(b.dataset.page); window.scrollTo({top:0, behavior:"smooth"}); render(); });
+      });
+    }
+  }
+
+  // ---- イベント ----
+  document.getElementById("tabs").addEventListener("click", function (e) {
+    const t = e.target.closest(".dash-tab");
+    if (!t) return;
+    document.querySelectorAll(".dash-tab").forEach(x => x.classList.remove("is-active"));
+    t.classList.add("is-active");
+    state.source = t.dataset.source;
+    state.page = 1;
+    render();
+  });
+
+  ["f-industry","f-city","f-pay","f-feature"].forEach(id => {
+    document.getElementById(id).addEventListener("change", e => {
+      state[id.slice(2)] = e.target.value;
+      state.page = 1; render();
+    });
+  });
+  let timer = null;
+  document.getElementById("f-q").addEventListener("input", e => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { state.q = e.target.value.trim(); state.page = 1; render(); }, 150);
+  });
+  document.getElementById("reset").addEventListener("click", () => {
+    Object.assign(state, { source:"all", industry:"", city:"", pay:"", feature:"", q:"", page:1 });
+    document.getElementById("f-industry").value = "";
+    document.getElementById("f-city").value = "";
+    document.getElementById("f-pay").value = "";
+    document.getElementById("f-feature").value = "";
+    document.getElementById("f-q").value = "";
+    document.querySelectorAll(".dash-tab").forEach(x => x.classList.remove("is-active"));
+    document.querySelector('.dash-tab[data-source="all"]').classList.add("is-active");
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>求人詳細｜U:story 綴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=M+PLUS+Rounded+1c:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">U</span>
+      <span>U:story</span>
+      <span class="brand-tagline">綴｜学校アカウント</span>
+    </a>
+    <nav class="nav">
+      <span id="school-label" class="area-select"></span>
+      <a href="#" id="logout" class="logout">ログアウト</a>
+    </nav>
+  </div>
+</header>
+
+<div class="detail-head">
+  <div class="container">
+    <a href="app.html" class="detail-back">← 求人一覧に戻る</a>
+    <div class="detail-source" id="d-source"></div>
+    <h1 class="detail-title" id="d-title">読み込み中…</h1>
+    <div class="detail-company" id="d-company"></div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="detail-grid">
+    <div class="detail-main">
+      <img id="d-hero" class="detail-hero" src="" alt="" />
+
+      <div class="detail-section">
+        <h3>仕事内容</h3>
+        <p id="d-summary"></p>
+      </div>
+
+      <div class="detail-section">
+        <h3>企業からのメッセージ</h3>
+        <p id="d-message"></p>
+      </div>
+
+      <div class="detail-section">
+        <h3>こだわり条件</h3>
+        <div id="d-features" class="job-meta" style="margin:0;"></div>
+      </div>
+
+      <div class="detail-section">
+        <h3>福利厚生</h3>
+        <p id="d-benefits"></p>
+      </div>
+
+      <div class="detail-section">
+        <h3>採用情報</h3>
+        <p id="d-hires"></p>
+      </div>
+    </div>
+
+    <aside>
+      <div class="detail-card">
+        <dl>
+          <dt>初任給（月給）</dt>
+          <dd class="large" id="d-pay"></dd>
+          <dt>勤務地</dt>
+          <dd id="d-city"></dd>
+          <dt>業種 / 職種</dt>
+          <dd id="d-ind"></dd>
+          <dt>年間休日</dt>
+          <dd id="d-holidays"></dd>
+          <dt>勤務時間</dt>
+          <dd id="d-hours"></dd>
+          <dt>試用期間</dt>
+          <dd id="d-probation"></dd>
+          <dt>定年</dt>
+          <dd id="d-retire"></dd>
+          <dt>求人到着日</dt>
+          <dd id="d-received"></dd>
+        </dl>
+        <button class="detail-cta" type="button" onclick="alert('この求人を「生徒に共有済み」として記録しました。（サンプル動作）')">この求人を生徒に共有する</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2026 USTORY Inc.</span>
+      <span>綴 by U:story</span>
+    </div>
+  </div>
+</footer>
+
+<script src="data/schools.js"></script>
+<script src="data/jobs.js"></script>
+<script>
+(function () {
+  const sess = JSON.parse(sessionStorage.getItem("tsuduri.session") || "null");
+  if (!sess) { window.location.replace("login.html"); return; }
+  document.getElementById("school-label").textContent = "📍 " + sess.shortName;
+  document.getElementById("logout").addEventListener("click", function (e) {
+    e.preventDefault();
+    sessionStorage.removeItem("tsuduri.session");
+    window.location.replace("login.html");
+  });
+
+  const id = new URLSearchParams(location.search).get("id");
+  const j = (window.JOBS || []).find(x => x.id === id);
+
+  if (!j) {
+    document.getElementById("d-title").textContent = "求人が見つかりませんでした";
+    document.getElementById("d-company").textContent = "求人一覧から再度お選びください。";
+    return;
+  }
+
+  // 他校宛が紛れていたら制限
+  if (j.source === "school" && j.sourceSchoolId !== sess.schoolId) {
+    document.getElementById("d-title").textContent = "この求人は閲覧できません";
+    document.getElementById("d-company").textContent = "他校宛の求人は閲覧範囲外です。求人一覧に戻ってください。";
+    return;
+  }
+
+  const sourceHtml = j.source === "school"
+    ? `<span class="badge source-school">自校に届いた求人</span>　<span style="font-size:12px; color:#666;">${sess.shortName} 宛に企業から直接届いた求人です</span>`
+    : `<span class="badge source-web" style="background:#e9f7fc; color:#0096c3;">高校生就職Web経由</span>　<span style="font-size:12px; color:#666;">全国の高校に公開されている求人です</span>`;
+  document.getElementById("d-source").innerHTML = sourceHtml;
+
+  document.getElementById("d-title").textContent = j.title;
+  document.getElementById("d-company").textContent = j.company;
+  document.getElementById("d-hero").src = j.thumb;
+  document.getElementById("d-summary").textContent = j.summary + "（職種：" + j.jobType + "／勤務地：" + j.city + "）";
+  document.getElementById("d-message").textContent =
+    "私たち" + j.company + "では、" + j.industryLabel + "の現場で長く活躍してもらえる仲間を募集しています。先輩がそばで教える体制を整えているので、高校で学んだ基礎があれば十分にスタートできます。一緒にこの仕事を作っていきましょう。";
+
+  const fmap = { dorm:"寮あり", holiday120:"年休120日以上", noTenkin:"転勤なし", certSupport:"資格取得支援", rookie:"未経験OK", weekend:"土日休み", transport:"通勤手当あり", uniform:"制服貸与" };
+  document.getElementById("d-features").innerHTML = (j.features||[]).map(f =>
+    `<span class="meta-pill" style="background:#e6f7f4; color:#07957d; font-weight:700;">${fmap[f]||f}</span>`
+  ).join("") || `<span style="color:#999;">特記事項なし</span>`;
+
+  document.getElementById("d-benefits").textContent = (j.benefits || []).join("　・　");
+  document.getElementById("d-hires").textContent = "募集人数 " + j.hires + "名／高卒新卒対象／応募は学校進路指導部経由でお願いします。";
+
+  document.getElementById("d-pay").textContent = (j.monthlyPay/10000).toFixed(1) + " 万円";
+  document.getElementById("d-city").textContent = j.city;
+  document.getElementById("d-ind").textContent = j.industryLabel + " / " + j.jobType;
+  document.getElementById("d-holidays").textContent = j.annualHolidays + " 日";
+  document.getElementById("d-hours").textContent = j.workHours;
+  document.getElementById("d-probation").textContent = j.probation;
+  document.getElementById("d-retire").textContent = j.retireAge + " 歳";
+  document.getElementById("d-received").textContent = j.receivedAt;
+})();
+</script>
+</body>
+</html>

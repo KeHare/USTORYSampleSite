@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>学校ログイン｜U:story 綴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=M+PLUS+Rounded+1c:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">U</span>
+      <span>U:story</span>
+      <span class="brand-tagline">綴｜学校ログイン</span>
+    </a>
+    <nav class="nav">
+      <a href="index.html">サイトに戻る</a>
+    </nav>
+  </div>
+</header>
+
+<div class="login-wrap">
+  <form class="login-card" id="login-form" autocomplete="off">
+    <h1>学校アカウントでログイン</h1>
+    <p class="lead">貴校に届いた求人票と、<br>高校生就職Web由来の求人をまとめて閲覧できます。</p>
+
+    <div class="login-error" id="error">IDまたはパスワードが違うようです。サンプル下記のヒントを確認してみてください。</div>
+
+    <div class="field">
+      <label for="school-id">学校ID</label>
+      <input id="school-id" name="school-id" type="text" placeholder="例：takikawa-kogyo" autocapitalize="off" autocorrect="off" />
+    </div>
+    <div class="field">
+      <label for="password">パスワード</label>
+      <input id="password" name="password" type="password" placeholder="パスワード" />
+    </div>
+    <button class="login-btn" type="submit">ログイン</button>
+
+    <div class="login-hint">
+      <strong>サンプルアカウント（デモ用）</strong><br>
+      takikawa-kogyo / Tsuzuri-Tkw-2026 ─ 北海道滝川工業<br>
+      sunagawa-koukou / Tsuzuri-Sng-2026 ─ 北海道砂川<br>
+      yuuhou / Tsuzuri-Yuh-2026 ─ 北海道有朋<br>
+      try-asahikawa / Tsuzuri-Ahk-2026 ─ トライ式・旭川<br>
+      try-sapporo / Tsuzuri-Spr-2026 ─ トライ式・札幌<br>
+      komazawa-tomakomai / Tsuzuri-Kma-2026 ─ 駒澤苫小牧
+    </div>
+  </form>
+</div>
+
+<script src="data/schools.js"></script>
+<script>
+(function () {
+  const form = document.getElementById("login-form");
+  const errBox = document.getElementById("error");
+  const idInput = document.getElementById("school-id");
+  const pwInput = document.getElementById("password");
+
+  // 入力保持（feedback_no_dismay_ux: 入力済みデータは失わない）
+  const saved = sessionStorage.getItem("tsuduri.login.draftId");
+  if (saved) idInput.value = saved;
+
+  idInput.addEventListener("input", () => {
+    sessionStorage.setItem("tsuduri.login.draftId", idInput.value);
+  });
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    errBox.classList.remove("show");
+    const id = idInput.value.trim();
+    const pw = pwInput.value;
+    const match = (window.SCHOOLS || []).find(s => s.id === id && s.password === pw);
+    if (!match) {
+      errBox.classList.add("show");
+      pwInput.focus();
+      pwInput.select();
+      return;
+    }
+    sessionStorage.setItem("tsuduri.session", JSON.stringify({
+      schoolId: match.id,
+      schoolName: match.name,
+      shortName: match.shortName,
+      city: match.city,
+      ts: Date.now()
+    }));
+    sessionStorage.removeItem("tsuduri.login.draftId");
+    window.location.href = "app.html";
+  });
+})();
+</script>
+</body>
+</html>
